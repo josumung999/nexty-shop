@@ -1,4 +1,4 @@
-import { AppBar, Container, createTheme, CssBaseline, IconButton, Link, Switch, ThemeProvider, Toolbar, Typography } from "@material-ui/core"
+import { AppBar, Badge, Container, createTheme, CssBaseline, IconButton, Link, Switch, ThemeProvider, Toolbar, Typography } from "@material-ui/core"
 import { Person, ShoppingCart } from "@material-ui/icons"
 import Cookies from "js-cookie"
 import Head from "next/head"
@@ -9,7 +9,7 @@ import useStyles from "../utils/styles"
 
 const Layout = ({title, description, children}) => {
   const {state, dispatch} = useContext(Store);
-  const {darkMode} = state;
+  const {darkMode, cart} = state;
   const theme = createTheme({
     typography: {
       h1: {
@@ -72,7 +72,11 @@ const Layout = ({title, description, children}) => {
                     color="inherit"
                     aria-label="menu"
                   >
-                    <ShoppingCart className={classes.menuIcon} />
+                    {cart.cartItems.length > 0 ?
+                      <Badge color="secondary" badgeContent={cart.cartItems.length}>
+                        <ShoppingCart className={classes.menuIcon} />
+                      </Badge> : <ShoppingCart className={classes.menuIcon} />
+                    }  
                   </IconButton>
                 </Link>
               </NextLink>
