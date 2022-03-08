@@ -15,6 +15,12 @@ const useStyles = makeStyles({
   grow: {
     flexGrow: 1,
   },
+  menuIcon: {
+    height: 24,
+    width: 24,
+    color: '#ffffff',
+    marginRight: 6
+  },
   main: {
     minHeight: '80vh',
   },

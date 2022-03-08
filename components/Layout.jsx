@@ -1,4 +1,4 @@
-import { AppBar, Container, Link, Toolbar, Typography } from "@material-ui/core"
+import { AppBar, Container, IconButton, Link, Toolbar, Typography } from "@material-ui/core"
 import { Person, ShoppingCart } from "@material-ui/icons"
 import Head from "next/head"
 import NextLink from 'next/link'
@@ -25,12 +25,26 @@ const Layout = ({children}) => {
           <div>
             <NextLink href="/cart" passHref>
               <Link>
-                <ShoppingCart />
+                <IconButton
+                  size="large"
+                  edge="start"
+                  color="inherit"
+                  aria-label="menu"
+                >
+                  <ShoppingCart className={classes.menuIcon} />
+                </IconButton>
               </Link>
             </NextLink>
             <NextLink href="/login" passHref>
               <Link>
-                <Person/>
+                <IconButton
+                  size="large"
+                  edge="start"
+                  color="inherit"
+                  aria-label="menu"
+                >
+                  <Person className={classes.menuIcon} />
+                </IconButton>
               </Link>
             </NextLink>
           </div>
