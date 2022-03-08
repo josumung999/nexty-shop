@@ -26,6 +26,7 @@ const useStyles = makeStyles({
   },
   footer: {
     textAlign: 'center',
+    padding: '4rem',
   }
 });
 
