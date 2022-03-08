@@ -1,11 +1,16 @@
-import { AppBar, Container, createMuiTheme, CssBaseline, IconButton, Link, ThemeProvider, Toolbar, Typography } from "@material-ui/core"
+import { AppBar, Container, createTheme, CssBaseline, IconButton, Link, Switch, ThemeProvider, Toolbar, Typography } from "@material-ui/core"
 import { Person, ShoppingCart } from "@material-ui/icons"
+import Cookies from "js-cookie"
 import Head from "next/head"
 import NextLink from 'next/link'
+import { useContext } from "react"
+import { Store } from "../utils/Store"
 import useStyles from "../utils/styles"
 
 const Layout = ({title, description, children}) => {
-  const theme = createMuiTheme({
+  const {state, dispatch} = useContext(Store);
+  const {darkMode} = state;
+  const theme = createTheme({
     typography: {
       h1: {
         fontSize: '1.6rem',
@@ -20,7 +25,7 @@ const Layout = ({title, description, children}) => {
       }
     },
     palette: {
-      type: 'light',
+      type: darkMode ? 'dark' : 'light',
       primary: {
         main: '#f0c000'
       },
@@ -30,6 +35,11 @@ const Layout = ({title, description, children}) => {
     }
   })
   const classes = useStyles();
+  const darkModeChangeHandler = () => {
+    dispatch({type: darkMode ? 'DARK_MODE_OFF' : 'DARK_MODE_ON' });
+    const newDarkMode = !darkMode;
+    Cookies.set('darkMode', newDarkMode ? 'ON': 'OFF');
+  }
 
 
   return (
@@ -51,10 +61,13 @@ const Layout = ({title, description, children}) => {
             </NextLink>
             <div className={classes.grow}></div>
             <div>
+              <Switch 
+                checked={darkMode} 
+                onChange={darkModeChangeHandler}
+              ></Switch>
               <NextLink href="/cart" passHref>
                 <Link>
                   <IconButton
-                    size="large"
                     edge="start"
                     color="inherit"
                     aria-label="menu"
@@ -66,7 +79,6 @@ const Layout = ({title, description, children}) => {
               <NextLink href="/login" passHref>
                 <Link>
                   <IconButton
-                    size="large"
                     edge="start"
                     color="inherit"
                     aria-label="menu"

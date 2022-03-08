@@ -76,7 +76,7 @@ function ProductScreen() {
                       </Typography>
                     </Grid>
                     <Grid item xs={6}>
-                      <Typography variant='h6' color='text.secondary'>
+                      <Typography variant='h6' color='textSecondary'>
                         $ {product.price}
                       </Typography>
                     </Grid>
