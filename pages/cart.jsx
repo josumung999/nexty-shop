@@ -5,8 +5,9 @@ import { Button, Card, Grid, Link, List, ListItem, MenuItem, Select, Table, Tabl
 import NextLink from 'next/link';
 import Image from "next/image";
 import { Cancel } from "@material-ui/icons";
+import dynamic from "next/dynamic";
 
-const CartScreen = () => {
+function CartScreen() {
   const { state } = useContext(Store);
   const {
     cart: { cartItems }
@@ -106,4 +107,4 @@ const CartScreen = () => {
   )
 }
 
-export default CartScreen
+export default dynamic(() => Promise.resolve(CartScreen), { ssr: false })
