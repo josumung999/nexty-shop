@@ -16,7 +16,6 @@ const Layout = ({title, description, children}) => {
         fontSize: '1.6rem',
         fontWeight: 500,
         margin: '1rem 0',
-        color: "#af861f"
       },
       h2: {
         fontSize: '1.6rem',
