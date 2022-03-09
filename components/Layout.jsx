@@ -1,15 +1,17 @@
-import { AppBar, Badge, Container, createTheme, CssBaseline, IconButton, Link, Switch, ThemeProvider, Toolbar, Typography } from "@material-ui/core"
+import { AppBar, Badge, Container, createTheme, CssBaseline, IconButton, Link, Menu, MenuItem, Switch, ThemeProvider, Toolbar, Typography } from "@material-ui/core"
 import { Person, ShoppingCart } from "@material-ui/icons"
 import Cookies from "js-cookie"
 import Head from "next/head"
 import NextLink from 'next/link'
-import { useContext } from "react"
+import { useContext, useState } from "react"
 import { Store } from "../utils/Store"
 import useStyles from "../utils/styles"
+import { useRouter } from 'next/router';
 
 const Layout = ({title, description, children}) => {
+  const router = useRouter()
   const {state, dispatch} = useContext(Store);
-  const {darkMode, cart} = state;
+  const {darkMode, cart, userInfo} = state;
   const theme = createTheme({
     typography: {
       h1: {
@@ -39,6 +41,21 @@ const Layout = ({title, description, children}) => {
     const newDarkMode = !darkMode;
     Cookies.set('darkMode', newDarkMode ? 'ON': 'OFF');
   }
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const loginClickHandler = (e) => {
+    setAnchorEl(e.currentTarget);
+  }
+  const loginMenuCloseHandler = () => {
+    setAnchorEl(null);
+  }
+  const logoutClickHandler = () => {
+    setAnchorEl(null);
+    dispatch({ type: 'USER_LOGOUT' });
+    Cookies.remove('userInfo');
+    Cookies.remove('cartItem');
+    router.push('/');
+  };
 
 
   return (
@@ -79,17 +96,42 @@ const Layout = ({title, description, children}) => {
                   </IconButton>
                 </Link>
               </NextLink>
-              <NextLink href="/login" passHref>
-                <Link>
+              {userInfo ? (
+                <>
                   <IconButton
-                    edge="start"
-                    color="inherit"
-                    aria-label="menu"
-                  >
-                    <Person className={classes.menuIcon} />
+                    ria-controls="simple-menu"
+                    aria-haspopup="true"
+                    onClick={loginClickHandler}
+                    className={classes.navbarButton}
+                  >{userInfo.name}
                   </IconButton>
-                </Link>
-              </NextLink>
+                  <Menu
+                    id="simple-menu"
+                    anchorEl={anchorEl}
+                    keepMounted
+                    open={Boolean(anchorEl)}
+                    onClose={loginMenuCloseHandler}
+                  >
+                    <MenuItem onClick={loginMenuCloseHandler}>Profile</MenuItem>
+                    <MenuItem onClick={loginMenuCloseHandler}>
+                      My Account  
+                    </MenuItem>
+                    <MenuItem onClick={logoutClickHandler}>Logout</MenuItem>
+                  </Menu>
+                </>
+              ) : (
+                <NextLink href="/login" passHref>
+                  <Link>
+                    <IconButton
+                      edge="start"
+                      color="inherit"
+                      aria-label="menu"
+                    >
+                      <Person className={classes.menuIcon} />
+                    </IconButton>
+                  </Link>
+                </NextLink>
+              )}
             </div>
           </Toolbar>
         </AppBar>
