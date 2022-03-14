@@ -24,8 +24,8 @@ export default function Shipping() {
   const router = useRouter();
   const { state, dispatch } = useContext(Store);
   const {
-    userInfo,
     cart: { shippingAddress },
+    userInfo,
   } = state;
   useEffect(() => {
     if (!userInfo) {
