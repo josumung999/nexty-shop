@@ -34,21 +34,21 @@ export default function Shipping() {
     setValue('fullName', shippingAddress.fullName);
     setValue('address', shippingAddress.address);
     setValue('city', shippingAddress.city);
-    setValue('postalCode', shippingAddress.postalCode);
+    setValue('province', shippingAddress.province);
     setValue('country', shippingAddress.country);
   }, []);
 
   const classes = useStyles();
-  const submitHandler = ({ fullName, address, city, postalCode, country }) => {
+  const submitHandler = ({ fullName, address, city, province, country }) => {
     dispatch({
       type: 'SAVE_SHIPPING_ADDRESS',
-      payload: { fullName, address, city, postalCode, country },
+      payload: { fullName, address, city, province, country },
     });
     Cookies.set('shippingAddress', JSON.stringify({
       fullName,
       address,
       city,
-      postalCode,
+      province,
       country,
     }));
     router.push('/payment');
@@ -147,7 +147,7 @@ export default function Shipping() {
           </ListItem>
           <ListItem>
             <Controller
-              name="postalCode"
+              name="province"
               control={control}
               defaultValue=""
               rules={{
@@ -158,14 +158,14 @@ export default function Shipping() {
                 <TextField
                   variant="outlined"
                   fullWidth
-                  id="postalCode"
-                  label="Postal Code"
-                  error={Boolean(errors.postalCode)}
+                  id="province"
+                  label="Province"
+                  error={Boolean(errors.province)}
                   helperText={
-                    errors.postalCode
-                      ? errors.postalCode.type === 'minLength'
-                        ? 'Postal Code length is more than 1'
-                        : 'Postal Code is required'
+                    errors.province
+                      ? errors.province.type === 'minLength'
+                        ? 'Province length is more than 1'
+                        : 'Province is required'
                       : ''
                   }
                   {...field}

@@ -28,6 +28,10 @@ const useStyles = makeStyles({
     textAlign: 'center',
     padding: '4rem',
   },
+  section: {
+    marginTop: 10,
+    marginBottom: 10,
+  },
   form: {
     maxWidth: 800,
     margin: '0 auto'
