@@ -34,21 +34,21 @@ export default function Shipping() {
     setValue('fullName', shippingAddress.fullName);
     setValue('address', shippingAddress.address);
     setValue('city', shippingAddress.city);
-    setValue('province', shippingAddress.province);
+    setValue('postalCode', shippingAddress.postalCode);
     setValue('country', shippingAddress.country);
   }, []);
 
   const classes = useStyles();
-  const submitHandler = ({ fullName, address, city, province, country }) => {
+  const submitHandler = ({ fullName, address, city, postalCode, country }) => {
     dispatch({
       type: 'SAVE_SHIPPING_ADDRESS',
-      payload: { fullName, address, city, province, country },
+      payload: { fullName, address, city, postalCode, country },
     });
     Cookies.set('shippingAddress', JSON.stringify({
       fullName,
       address,
       city,
-      province,
+      postalCode,
       country,
     }));
     router.push('/payment');
@@ -147,7 +147,7 @@ export default function Shipping() {
           </ListItem>
           <ListItem>
             <Controller
-              name="province"
+              name="postalCode"
               control={control}
               defaultValue=""
               rules={{
@@ -158,14 +158,14 @@ export default function Shipping() {
                 <TextField
                   variant="outlined"
                   fullWidth
-                  id="province"
-                  label="Province"
-                  error={Boolean(errors.province)}
+                  id="postalCode"
+                  label="postalCode"
+                  error={Boolean(errors.postalCode)}
                   helperText={
-                    errors.province
-                      ? errors.province.type === 'minLength'
-                        ? 'Province length is more than 1'
-                        : 'Province is required'
+                    errors.postalCode
+                      ? errors.postalCode.type === 'minLength'
+                        ? 'postalCode length is more than 1'
+                        : 'postalCode is required'
                       : ''
                   }
                   {...field}

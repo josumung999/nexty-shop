@@ -1,5 +1,5 @@
-import { Button, Card, Grid, Link, List, ListItem, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@material-ui/core';
-import React, { useContext, useEffect } from 'react'
+import { Button, Card, CircularProgress, Grid, Link, List, ListItem, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@material-ui/core';
+import React, { useContext, useEffect, useState } from 'react'
 import Layout from '../components/Layout';
 import CheckoutWizard from '../components/CheckoutWizard';
 import useStyles from '../utils/styles';
@@ -8,6 +8,10 @@ import { Store } from '../utils/Store';
 import NextLink from 'next/link'
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
+import { useSnackbar } from 'notistack';
+import { getError } from '../utils/error';
+import Cookies from 'js-cookie';
+import axios from 'axios';
 
 
 function PlaceOrder() {
@@ -15,6 +19,7 @@ function PlaceOrder() {
   const router = useRouter();
   const { state, dispatch } = useContext(Store);
   const {
+    userInfo,
     cart: { cartItems, shippingAddress, paymentMethod },
   } = state;
   const round2 = (num) => Math.round(num * 100 + Number.EPSILON) / 100;
@@ -30,7 +35,45 @@ function PlaceOrder() {
     if (!paymentMethod) {
       router.push('/payment');
     }
-  }, [])
+    if (cartItems.length === 0) {
+      router.push('/cart');
+    }
+  }, []);
+
+  const { closeSnackbar, enqueueSnackbar } = useSnackbar();
+  const [loading, setLoading] = useState(false);
+  
+  const placeOrderHandler = async () => {
+    closeSnackbar();
+    try {
+      setLoading(true);
+      const { data } = await axios.post(
+        '/api/orders',
+        {
+          orderItems: cartItems,
+          shippingAddress,
+          paymentMethod,
+          itemsPrice,
+          shippingPrice,
+          taxPrice,
+          totalPrice,
+        },
+        {
+          headers: {
+            authorization: `Bearer ${userInfo.token}`,
+          },
+        }
+      );
+      dispatch({ type: 'CART_CLEAR' });
+      Cookies.remove('cartItems');
+      setLoading(false);
+      router.push(`/order/${data._id}`);
+    } catch (err) {
+      setLoading(false);
+      enqueueSnackbar(getError(err), { variant: 'error' })
+    }
+  }
+
   return (
     <Layout title="Place your Order">
       <CheckoutWizard activeStep={3} />
@@ -49,7 +92,7 @@ function PlaceOrder() {
               </ListItem>
               <ListItem>
                 {shippingAddress.fullName}, {shippingAddress.address},{' '}
-                {shippingAddress.city}, {shippingAddress.province},{' '}
+                {shippingAddress.city}, {shippingAddress.postalCode},{' '}
                 {shippingAddress.country}
               </ListItem>
             </List>
@@ -114,7 +157,7 @@ function PlaceOrder() {
                           </TableCell>
                           <TableCell align='right'>
                             <Typography>
-                              {item.price}
+                              ${item.price}
                             </Typography>
                           </TableCell>
                         </TableRow>
@@ -179,10 +222,20 @@ function PlaceOrder() {
                 </Grid>
               </ListItem>
               <ListItem>
-                <Button variant="contained" color="primary" fullWidth>
+                <Button 
+                  variant="contained" 
+                  color="primary" 
+                  fullWidth
+                  onClick={placeOrderHandler}
+                >
                   Place Order
                 </Button>
               </ListItem>
+              {loading && (
+                <ListItem>
+                  <CircularProgress />
+                </ListItem>
+              )}
             </List>
           </Card>
         </Grid>
